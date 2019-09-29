@@ -1,0 +1,40 @@
+@import 'assets/scss/variables.scss';
+
+.header-title {
+    position: relative;
+    pointer-events: none;
+    .big {
+        font-family: $font-bg;
+        color: $gold;
+        opacity: .3;
+        position: absolute;
+        bottom: 0;
+        left: -30px;
+        font-size: 13rem;
+        line-height: 13rem;
+        z-index: 0;
+        white-space: nowrap;
+    }
+    h1 {
+        font-family: $font-body;
+        font-style: italic;
+        color: $white;
+        font-size: 4.5rem;
+        position: relative;
+        z-index: 1;
+        span {
+            display: block;
+        }
+    }
+    @include md {
+        .big { 
+            font-size: 4.5rem;
+            line-height: 4.5rem;
+            left: 0;
+            bottom: .75rem;
+        }
+        h1 {
+            font-size: 2rem;
+        }
+    }
+}

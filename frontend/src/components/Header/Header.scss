@@ -1,0 +1,40 @@
+@import 'assets/scss/variables.scss';
+
+.top-nav {
+    display: flex;
+    width: 100%;
+    max-height: 140px;
+    position: fixed;
+    &.no-fix {
+        position: relative;
+    }
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 1.5rem 0;
+
+        .logo-header {
+            max-height: 65px;
+            width: auto;
+        }
+        button.home-toggler {
+            @extend .btn-transparent;
+            padding: 0;
+            width: 65px;
+            height: 65px;
+
+        }
+        button.menu-toggler {
+            @extend .btn-transparent;
+            margin: 0 0 0 auto;
+        }
+    }
+    @include sm {
+        width: 100vw;
+        position: relative;
+        padding: 0;
+        max-height: 65px;
+        .container .logo-header { max-height: 65px; }
+    }
+}

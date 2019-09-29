@@ -1,0 +1,7 @@
+
+@font-face {
+    font-family:"Oak-Bold";
+    src:url("Oak-Bold.woff2") format("woff2"),url("Oak-Bold.woff") format("woff"),url("Oak-Bold.otf") format("opentype");
+    font-style:normal;font-weight:400;
+}
+        

@@ -23,7 +23,7 @@ MongoClient.connect(url, config, (err, client) => {
   assert.equal(null, err);
   console.log("Connected successfully to mongodb server");
   selectedDB = client.db(dbName);
-  app.listen(3000, ()=>console.log('API server listening on port 3000'))
+  app.listen(4000, ()=>console.log('API server listening on port 4000'))
 });
 
 app.get('/', (req, res, next) => {
@@ -106,6 +106,7 @@ app.delete('/product/:id', (req, res, next) => {
 })
 
 app.patch('/product/:id', (req, res, next) => {
+    //update a product
     if(!req.body) {
         return res.status(400).send({
             message: "Patch needs some details"

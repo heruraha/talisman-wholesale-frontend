@@ -1,0 +1,64 @@
+@import 'variables.scss';
+@import '~bootstrap/scss/bootstrap.scss';
+
+//Global Styles
+body {
+  background: $body-bg;
+  font-family: $font-btn;
+  color: $white;
+}
+
+h1,h2,h3,h4 {
+  font-weight: lighter;
+  font-family: $font-body;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+::placeholder {
+  color: $input-color-placeholder !important;
+}
+
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+a {
+  transition: .3s all;
+}
+
+h4 {
+  font-family: $font-btn;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+}
+.headline {
+  font-size: 24px;
+  line-height: 36px;
+  letter-spacing: 1px;
+  @include sm {
+    font-size: 1.2rem;
+  }
+}
+
+.btn {
+  font-family: $font-btn;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 0;
+  transition: .3s all;
+  &:hover {
+    background: $gold;
+    border: $gold;
+  }
+}
+
+.full-width { width: 100%;}
+
+.mt-6 { margin-top: 5rem; }
