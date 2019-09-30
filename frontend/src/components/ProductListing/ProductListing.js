@@ -17,9 +17,6 @@ const ProductListing = (props) => {
         <div className="product-item col-sm-4 mb-3" onClick={props.click}>
             <img src={argo} alt=""/>
             <h4>{props.name}</h4>
-            <span className="price">
-                ${props.price}
-            </span>
             
         </div>
     )

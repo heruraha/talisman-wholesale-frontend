@@ -11,7 +11,7 @@ const ProductDetails = (props) => {
     const [appState, dispatch] = React.useContext(CTX);
     const [colors, setColors] = React.useState(null)
     const [sizes, setSizes] = React.useState(null)
-    const [product, setProduct] = React.useState({size: null, color: null, quantity: 0})
+    const [product, setProduct] = React.useState({size: null, color: null, quantity: 1})
 
     useEffect( () => {  
       dispatch({type: 'UPDATE_ACTIVE_SCREEN', payload: 'productDetails'})
@@ -19,7 +19,6 @@ const ProductDetails = (props) => {
         dispatch({type: 'LOADING_ENABLED'})
         APIService.getProduct(props.match.params.id)
         .then((res) =>  { 
-          console.log(res, 'yo')
           dispatch({type: 'SET_ACTIVE_PRODUCT', payload: res[0] })
           dispatch({type: 'LOADING_DISABLED'});
         })
@@ -64,21 +63,30 @@ const ProductDetails = (props) => {
       }
     }, [appState.activeProduct])
 
-    const handleColor = () => {
-      //setProduct({color: })
-    }
+
     const addToCart = () => {
-      console.log(product)
       if(product.quantity > 0) {
         const obj = {
           product,
           productDetails: appState.activeProduct
         }
-        console.log(obj, 'modified obj')
         dispatch({type: 'ADD_PRODUCT_TO_CART', payload: obj });
-        dispatch({type: 'TOGGLE_SIDENAV', payload: !appState.navOpen});
+        dispatch({type: 'TOGGLE_SIDENAV', payload: true});
       }
     }
+
+    const handleEnter = (e) => {
+      if(e.key === 'Enter') {
+        setProduct({...product, quantity: e.target.value})
+        addToCart()
+      }
+    }
+
+    const minus = () => {
+      if(product.quantity >=1) { setProduct({...product, quantity: product.quantity - 1})}
+    }
+    const plus = () => setProduct({...product, quantity: product.quantity + 1})
+
 
     return (
       <>
@@ -124,21 +132,22 @@ const ProductDetails = (props) => {
             <div className="option-wrap my-4">
               <label>quantity</label>
               <div className="controls d-flex flex-row">
-                <button className="increment btn-transparent text-left">–</button>
+                <button className="increment btn-transparent text-left" onClick={minus}>–</button>
                 <input
                   value={product.quantity} 
                   onChange={(e) => setProduct({...product, quantity: e.target.value})}
+                  onKeyPress={e => handleEnter(e) }
                   type="number" 
                   className="form-control" 
                   placeholder="0" 
                   min="0" 
                   max="93" />
-                <button className="increment btn-transparent text-right">+</button>
+                <button className="increment btn-transparent text-right" onClick={plus}>+</button>
               </div>
             </div>
               </div>
 
-            <button className="btn btn-outline-primary btn-block btn-cart mt-5" onClick={addToCart}>Add to Cart</button>
+            <button className="btn btn-outline-primary btn-block btn-cart mt-5" onClick={addToCart} disabled={product.quantity > 0 ? false : true}>Add to Cart</button>
             
           </div>
           :

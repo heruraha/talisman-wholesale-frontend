@@ -1,38 +1,41 @@
-import React, {useEffect} from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { CTX } from 'store';
-import Logo from 'assets/img/logo.svg'
+import Header from 'components/Header/Header';
+import ProductListing from 'components/ProductListing/ProductListing';
+import APIService from 'services/api/apiService';
 
-import './Sidenav.scss';
 
-const SideNav = () => {
-  const [appState, dispatch] = React.useContext(CTX)
-  const [checkout, goToCheckout] = React.useState(false)
-  const handleClick = () =>   {
-    dispatch({type: 'TOGGLE_SIDENAV', payload: !appState.navOpen});
-  }
-  const getTotal = () => {
-    if(appState.cart.items && appState.cart.items.length > 0) {
-        let total = [];
-        appState.cart.items.map(e => total.push(Number(e.product.quantity) * Number(e.productDetails.price)))
-        return '$' + total.reduce((a,b) => a+b)
-    } else {
-      return '$0'
+const Checkout = (props) => {
+
+    document.title = `Checkout - Talisman Leather Wholesale`;
+
+    const [appState, dispatch] = React.useContext(CTX);
+    useEffect( () => {  
+      dispatch({type: 'UPDATE_ACTIVE_SCREEN', payload: 'checkout'})
+      dispatch({type: 'TOGGLE_SIDENAV', payload: false});
+
+    }, [appState.activeScreen]);
+
+
+    const getTotal = () => {
+      if(appState.cart.items && appState.cart.items.length > 0) {
+          let total = [];
+          appState.cart.items.map(e => total.push(Number(e.product.quantity) * Number(e.productDetails.price)))
+          return '$' + total.reduce((a,b) => a+b)
+      } else {
+        return '$0'
+      }
     }
-  }
-  const removeFromCart = (i)  => {
-    console.log(i)
-    let arr = appState.cart.items;
-  }
-
-  useEffect( () => goToCheckout(false), [checkout])
-
-  return (
-    <>
-    { checkout ? <Redirect to="/checkout" /> : null}
-    <div className={'sidenav ' + (appState.navOpen ? 'show' : 'hide')}>
-      <div className="wrap">
-        <h3 className="mt-4 mb-5">Your Cart</h3>
+    const removeFromCart = (i)  => {
+      console.log(i)
+      let arr = appState.cart.items;
+    }
+    
+    return (
+      <>
+      <Header props={props} />
+      <div className="container text-center p-0 mb-5">
+      <h3 className="mt-4 mb-5">Your Cart</h3>
         {appState.cart.items && appState.cart.items.length > 0 ?
           <>
           <div className="cart-items full-width px-4">
@@ -71,26 +74,18 @@ const SideNav = () => {
             </li>
             </ol>
           </div>
-          <button className="btn btn-outline-primary btn-block btn-cart" onClick={() => goToCheckout(true)}>Continue to Checkout</button>
+          <button className="btn btn-outline-primary btn-block btn-cart">Continue to Checkout</button>
           </>
           :
           <div className="cart-items empty">
             Your cart is empty.
           </div>
         }
+
       </div>
+      </>
+    );
 
-      
-      <button className="close-menu" onClick={handleClick}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-          <path d="M2.22-12.375l6.61-6.61,1.363-1.363a.516.516,0,0,0,0-.729L8.735-22.536a.516.516,0,0,0-.729,0L.032-14.563l-7.973-7.974a.516.516,0,0,0-.729,0l-1.459,1.459a.516.516,0,0,0,0,.729l7.974,7.974L-10.129-4.4a.516.516,0,0,0,0,.729l1.459,1.459a.516.516,0,0,0,.729,0L.032-10.187l6.61,6.61L8.006-2.214a.516.516,0,0,0,.729,0l1.459-1.459a.516.516,0,0,0,0-.729Z" transform="translate(10.28 22.687)" fill="#bfad86"/>
-        </svg>
-      </button>
-
-
-    </div>
-    </>
-  )
 }
 
-export default SideNav;
+export default Checkout;

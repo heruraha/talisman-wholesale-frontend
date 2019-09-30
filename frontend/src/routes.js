@@ -6,6 +6,8 @@ import NotFound from 'containers/NotFound';
 import MainScreen from 'containers/MainScreen';
 import About from 'containers/About';
 import ProductDetails from 'containers/ProductDetails';
+import Checkout from 'containers/Checkout';
+
 import Sidenav from 'components/Sidenav/Sidenav';
 
 const routikner = [
@@ -23,7 +25,12 @@ const routikner = [
     path: "/product/:id",
     component: ProductDetails,
     exact: false
-  }
+  },
+  {
+    path: "/checkout",
+    component: Checkout,
+    exact: true
+  },
 ];
 
 const Routes = () => {

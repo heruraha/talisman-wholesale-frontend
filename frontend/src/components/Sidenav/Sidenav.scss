@@ -2,7 +2,7 @@
 
 .sidenav {
   height: 100vh;
-  width: 30%;
+  width: 40%;
   position: absolute;
   opacity: 0;
   background-color: $black;
@@ -25,25 +25,9 @@
     align-items: center;
     justify-content: flex-start;
 
-    ul {
-      margin: 0 auto auto;
-      padding: 0;
-      text-align: center;
-      li {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        font-size: 3rem;
-        letter-spacing: 3px;
-        @include sm { font-size: 2rem }
-        a {
-          color: $white;
-          text-decoration: none;
-          &:hover {
-            color: $gold;
-          }
-        }
-      }
+    .btn-cart{
+      margin: auto 0 2rem 0;
+      width: calc(100% - 2rem);
     }
 
     .logo-nav {
@@ -54,9 +38,79 @@
   }
   .close-menu {
     position: absolute;
-    top: 1rem;
+    top: 1.5rem;
     right: 1rem;
     @extend .btn-transparent;
+  }
+  .cart-items {
+    overflow-y: auto;
+    max-height: 76vh;
+    ol.list {
+      margin: 0;
+      padding: 0;
+      li {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+        position: relative;
+        transition: .3s all;
+        .top {
+          font-family: $font-btn;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex;
+          justify-content: space-between;
+          transition: .3s all;
+          .first {
+            width: 60%;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+          .second {
+            width: 20%;
+            text-align: center;
+          }
+          .third {
+            width: 20%;
+            text-align: right;
+          }
+          &.header {
+            color: $gold;
+          }
+          &.totals {
+            border-top: 1px solid $gold;
+            margin-top: 1rem;
+            padding: .5rem 0;
+            .first {color: $gold}
+          }
+        }
+        .bottom {
+          font-size: .9rem;
+          letter-spacing: 1px;
+          color: $gold;
+          transition: .3s all;
+        }
+        .delete {
+          position: absolute;
+          right: 0;
+          background: $red;
+          width: 45px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 30px;
+          cursor: pointer;
+          visibility: hidden;
+          svg {width: 14px; height: auto;}
+        }
+        &:hover {
+          .top,.bottom {opacity: .5; }
+          .delete {visibility: visible;}
+        }
+      }
+    }
   }
 
 }

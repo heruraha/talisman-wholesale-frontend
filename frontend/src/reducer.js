@@ -40,7 +40,17 @@ const reducer = (state, action) => {
                     action.payload
                 ]
             }
-            }        
+            }
+        case 'REMOVE_PRODUCT_FROM_CART':
+            return {
+            ...state,
+            cart: {
+                ...state.cart,
+                items: [
+                    action.payload
+                ]
+            }
+            }  
         default:
             throw Error('reducer error');
     }
