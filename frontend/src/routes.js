@@ -5,6 +5,7 @@ import { CTX } from 'store';
 import NotFound from 'containers/NotFound';
 import MainScreen from 'containers/MainScreen';
 import About from 'containers/About';
+import ProductDetails from 'containers/ProductDetails';
 import Sidenav from 'components/Sidenav/Sidenav';
 
 const routikner = [
@@ -17,6 +18,11 @@ const routikner = [
     path: "/about",
     component: About,
     exact: true
+  },
+  {
+    path: "/product/:id",
+    component: ProductDetails,
+    exact: false
   }
 ];
 

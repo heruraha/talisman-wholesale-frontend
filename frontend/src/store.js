@@ -10,6 +10,16 @@ const initialState = {
     loading: false,
     products: null,
     activeProduct: null,
+    cart: {
+        items: [],
+        total: null
+    },
+    user: {
+        name: null,
+        email: null,
+        phone: null,
+        message: null
+    }
 }
 
 const Store = (props) => {

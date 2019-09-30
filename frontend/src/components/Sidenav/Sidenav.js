@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+
 import { CTX } from 'store';
 import Logo from 'assets/img/logo.svg'
 
@@ -15,14 +15,20 @@ const SideNav = () => {
     <div className={'sidenav ' + (appState.navOpen ? 'show' : 'hide')}>
       <div className="wrap">
         <img src={Logo} alt="Talisman Leather Wholesale" className="logo-nav" />
-        <ul>
-          <li className="link" onClick={handleClick}>
-            <Link to="/">Home</Link>
-          </li>
-          <li className="link" onClick={handleClick}>
-            <Link to="/about">About</Link>
-          </li>
-        </ul>
+        <h3>Your Cart</h3>
+        {appState.cart.items && appState.cart.items.length > 0 ?
+          <div className="cart-items">
+            <ol>
+            {appState.cart.items.map( (e,i) => {
+              return <li>{e.productDetails.name} - {e.product.color} - {e.product.size} - {e.product.quantity} </li>
+            })}
+            </ol>
+          </div>
+          :
+          <div className="cart-items empty">
+            your cart is empty
+          </div>
+        }
       </div>
 
       

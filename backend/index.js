@@ -96,6 +96,23 @@ app.post('/product', (req, res, next) => {
     }
 })
 
+app.post('/products', (req, res, next) => {
+    //add a new product
+    if(!req.body) {
+        return res.status(400).send({
+            message: "Empty body not permitted"
+        });
+    } else {
+        
+            const collection = selectedDB.collection('talismanwholesale');
+            collection.insertMany(req.body, (err, result) => {
+                err ? console.log(err, 'error adding product') : console.log('Product added:', result.ops);
+            })
+
+        res.end();
+    }
+})
+
 app.delete('/product/:id', (req, res, next) => {
     //delete a product
     const collection = selectedDB.collection('talismanwholesale');

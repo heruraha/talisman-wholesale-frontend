@@ -25,6 +25,22 @@ const reducer = (state, action) => {
             ...state,
             products: action.payload
             }
+        case 'SET_ACTIVE_PRODUCT':
+            return {
+            ...state,
+            activeProduct: action.payload
+            }
+        case 'ADD_PRODUCT_TO_CART':
+            return {
+            ...state,
+            cart: {
+                ...state.cart,
+                items: [
+                    ...state.cart.items,
+                    action.payload
+                ]
+            }
+            }        
         default:
             throw Error('reducer error');
     }
