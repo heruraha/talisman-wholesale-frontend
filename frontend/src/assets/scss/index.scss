@@ -120,3 +120,17 @@ label {
     }
   }
 }
+
+.form-control-group {
+  margin-bottom: 1rem;
+  input, textarea {
+    text-align: left;
+    font-size: .9rem;
+    letter-spacing: 1px;
+    height: 45px;
+    color: white;
+  }
+  textarea {
+    height: auto;
+  }
+}

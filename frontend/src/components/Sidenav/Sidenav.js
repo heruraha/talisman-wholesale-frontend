@@ -20,10 +20,7 @@ const SideNav = () => {
       return '$0'
     }
   }
-  const removeFromCart = (i)  => {
-    console.log(i)
-    let arr = appState.cart.items;
-  }
+  const removeFromCart = (i)  => dispatch({type: 'REMOVE_PRODUCT_FROM_CART', payload: i})
 
   useEffect( () => goToCheckout(false), [checkout])
 

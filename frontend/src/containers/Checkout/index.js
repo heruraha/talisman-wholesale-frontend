@@ -3,18 +3,40 @@ import { CTX } from 'store';
 import Header from 'components/Header/Header';
 import ProductListing from 'components/ProductListing/ProductListing';
 import APIService from 'services/api/apiService';
-
+import './Checkout.scss'
 
 const Checkout = (props) => {
 
     document.title = `Checkout - Talisman Leather Wholesale`;
 
     const [appState, dispatch] = React.useContext(CTX);
+
+    const [form, setForm] = React. useState({
+      contact: {
+        name: '',
+        email: null,
+        phone: null,
+        comments: null,
+        date: new Date,
+        address: {
+          street: null,
+          city: null,
+          state: null,
+          zip: null
+        }
+      }
+    })
+
     useEffect( () => {  
       dispatch({type: 'UPDATE_ACTIVE_SCREEN', payload: 'checkout'})
       dispatch({type: 'TOGGLE_SIDENAV', payload: false});
 
     }, [appState.activeScreen]);
+
+    const updateQty = (e,i) => {
+      console.log(e,i)
+      dispatch({type: 'UPDATE_PRODUCT_QTY', payload: { quantity: e, index: i}  })
+    }
 
 
     const getTotal = () => {
@@ -26,20 +48,23 @@ const Checkout = (props) => {
         return '$0'
       }
     }
-    const removeFromCart = (i)  => {
-      console.log(i)
-      let arr = appState.cart.items;
+
+    const removeFromCart = (i)  => dispatch({type: 'REMOVE_PRODUCT_FROM_CART', payload: i})
+
+    const handleForm = (e, val) => {
+      console.log(e.target.value, val)
+      //setForm({...form, contact: {...form.contact, name: e.target.value}})
     }
-    
+
     return (
       <>
       <Header props={props} />
       <div className="container text-center p-0 mb-5">
-      <h3 className="mt-4 mb-5">Your Cart</h3>
+      
         {appState.cart.items && appState.cart.items.length > 0 ?
           <>
-          <div className="cart-items full-width px-4">
-
+          <div className="cart-items-checkout full-width mb-5">
+          <h3 className="mt-4 mb-5">Checkout</h3>
             <ol className="list">
             <li>
               <div className="top header">
@@ -53,7 +78,16 @@ const Checkout = (props) => {
                 <li key={i}>
                   <div className="top">
                     <span className="first">{e.productDetails.name}</span>
-                    <span className="second">{e.product.quantity}</span>
+                    <span className="second">
+                    <input
+                      value={e.product.quantity}
+                      className="form-control"
+                      onChange={(e) => updateQty(e.target.value,i)}
+                      type="number" 
+                      placeholder="0" 
+                      min="0" 
+                      max="93" />
+                    </span>
                     <span className="third">${e.productDetails.price}</span>
                   </div>
                   <div className="bottom">{e.product.color} {e.product.size ?  `- ${e.product.size}` : null}</div>
@@ -66,7 +100,7 @@ const Checkout = (props) => {
               )
             })}
                         <li>
-              <div className="top totals">
+              <div className="top totals pb-0">
                 <span className="first">Total</span>
                 <span className="second"></span>
                 <span className="third">{getTotal()}</span>
@@ -74,7 +108,70 @@ const Checkout = (props) => {
             </li>
             </ol>
           </div>
-          <button className="btn btn-outline-primary btn-block btn-cart">Continue to Checkout</button>
+
+          <div className="contact-info full-width mb-5">
+          <h3 className="mt-4 mb-5">Contact Information</h3>
+          <div className="row">
+            <div className="col-sm-6 text-left">
+              <div className="form-control-group">
+                <label>Your Name</label>
+                <input
+                  value={form.contact.name}
+                  onChange={(e) => handleForm(e, 'name')}
+                  type="text" 
+                  className="form-control" 
+                  placeholder="First + Last" />
+              </div>
+              <div className="form-control-group">
+                <label>Email</label>
+                <input
+                  value={form.contact.email}
+                  onChange={(e) => handleForm(e, 'email')}
+                  type="text" 
+                  className="form-control" 
+                  placeholder="user@email.com" />
+              </div>
+            </div>
+            <div className="col-sm-6 text-left">
+              <div className="form-control-group">
+                <label>Phone Number</label>
+                <input
+                  value={form.contact.phone}
+                  onChange={(e) => handleForm(e, 'phone')}
+                  type="text" 
+                  className="form-control" 
+                  placeholder="(XXX) XXX-XXXX" />
+              </div>
+              <div className="form-control-group">
+                <label>When do you need it?</label>
+                <input
+                  value={form.contact.date}
+                  onChange={(e) => handleForm(e, 'date')}
+                  type="date" 
+                  className="form-control" 
+                   />
+              </div>
+            </div>
+            <div className="col-sm-12 text-left">
+              <div className="form-control-group">
+                <label>Notes for your order</label>
+                <textarea
+                  value={form.contact.comments}
+                  onChange={(e) => handleForm(e, 'comments')}
+                  type="text"
+                  className="form-control" 
+                  placeholder="Begin Typing" />
+              </div>
+            </div>
+          </div>
+          </div>
+
+
+          <div className="shipping-info full-width mb-5">
+            <h3 className="mt-4 mb-5">Shipping Information</h3>
+            <div className="row"></div>
+          </div>
+          <button className="mt-6 btn btn-outline-primary btn-block btn-cart">Checkout</button>
           </>
           :
           <div className="cart-items empty">

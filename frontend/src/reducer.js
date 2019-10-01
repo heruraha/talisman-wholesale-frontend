@@ -47,7 +47,28 @@ const reducer = (state, action) => {
             cart: {
                 ...state.cart,
                 items: [
-                    action.payload
+                    ...state.cart.items.slice(0, action.payload),
+                    ...state.cart.items.slice(action.payload + 1),
+                ]
+            }
+            }
+        case 'UPDATE_PRODUCT_QTY':
+            return {
+            ...state,
+            cart: {
+                ...state.cart,
+                items: [
+
+                    ...state.cart.items.slice(0, action.payload.index),
+                    {
+                        ...state.cart.items[action.payload.index],
+                        product: {
+                            ...state.cart.items[action.payload.index].product,
+                            quantity: action.payload.quantity
+                        }
+                    },
+                    ...state.cart.items.slice(action.payload.index + 1),
+
                 ]
             }
             }  
