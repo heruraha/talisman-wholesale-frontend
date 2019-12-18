@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { CTX } from 'store';
 import Header from 'components/Header/Header';
 import APIService from 'services/api/apiService';
-import argo from 'assets/img/img-argo.jpg';
+import Carousel from 'components/Carousel/Carousel'
+import Switch from 'components/Switch/Switch'
 
 const ProductDetails = (props) => {
 
@@ -10,8 +11,18 @@ const ProductDetails = (props) => {
 
     const [appState, dispatch] = React.useContext(CTX);
     const [colors, setColors] = React.useState(null)
+    const [altColors, setAltColors] = React.useState(null)
     const [sizes, setSizes] = React.useState(null)
-    const [product, setProduct] = React.useState({size: null, color: null, quantity: 1})
+    const [hardware, setHardware] = React.useState({nickle: true})
+    
+    const active = appState.activeProduct
+    const [product, setProduct] = React.useState({
+      size: active && active.sizes.length > 0  ? active.sizes[0] : null, 
+      color: active && active.color.length > 0  ? active.color[0] : null, 
+      color_alt: active && active.color_alt.length > 0  ? active.color_alt[0] : null,
+      quantity: 1, 
+      price: active ?  hardware.nickle ? active.price_nickel : active.price_brass : null,
+    })
 
     useEffect( () => {  
       dispatch({type: 'UPDATE_ACTIVE_SCREEN', payload: 'productDetails'})
@@ -19,49 +30,36 @@ const ProductDetails = (props) => {
         dispatch({type: 'LOADING_ENABLED'})
         APIService.getProduct(props.match.params.id)
         .then((res) =>  { 
-          dispatch({type: 'SET_ACTIVE_PRODUCT', payload: res[0] })
+          console.log(res.acf)
+          dispatch({type: 'SET_ACTIVE_PRODUCT', payload: res.acf })
           dispatch({type: 'LOADING_DISABLED'});
         })
         .catch((err) => { 
           dispatch({type: 'LOADING_DISABLED'});
           console.log(err);
         }) 
-      }
-    }, [appState.activeProduct]);
-
-    useEffect( () => {
-      if(appState.activeProduct) {
-        const colors = appState.activeProduct.colors.split(', ');        
-        setColors(colors)
-        setProduct({...product, color: colors[0]})
-        if(appState.activeProduct.sizes !== null) {
-          let sizes = []
-          const tmp = appState.activeProduct.sizes.split(', ');
-          tmp.forEach(e => {
-            switch(e) {
-              case 'sm':
-                sizes.push('Small/Medium')
-                break;
-              case 'lxl':
-                sizes.push('Large/Extra Large')
-                break;
-              case 'l':
-                sizes.push('Large')
-                break;
-              case 's':
-                sizes.push('Small')
-              case 'm':
-                sizes.push('Medium')
-              default:
-                sizes.push('')
-            }
-          })
-          setSizes(sizes)
-          setProduct({...product, size: sizes[0], color: colors[0]})
+      } else {
+        const colorOptions = appState.activeProduct.color;
+        const colorAltOptions = appState.activeProduct.color_alt;
+        const sizeOptions = appState.activeProduct.sizes;    
+        setColors(colorOptions)
+        setProduct(prevState => { return {...prevState, color: colorOptions[0], price: parseFloat(appState.activeProduct.price_nickel)} })
+        if(sizeOptions.length > 0) {
+          setSizes(sizeOptions)
+          setProduct(prevState => { return {...prevState, size: sizeOptions[0]} })
+        }
+        if(colorAltOptions.length > 0) {
+          setAltColors(colorAltOptions)
+          setProduct(prevState => { return {...prevState, color_alt: colorAltOptions[0]} })
         }
 
       }
-    }, [appState.activeProduct])
+    }, [appState.activeProduct]);
+
+    // useEffect( () => {
+    //   console.log(appState.activeProduct, 'active Product')
+    //   if(appState.activeProduct) 
+    // }, [appState.activeProduct])
 
 
     const addToCart = () => {
@@ -70,6 +68,7 @@ const ProductDetails = (props) => {
           product,
           productDetails: appState.activeProduct
         }
+        console.log(obj, 'added to cart')
         dispatch({type: 'ADD_PRODUCT_TO_CART', payload: obj });
         dispatch({type: 'TOGGLE_SIDENAV', payload: true});
       }
@@ -99,24 +98,22 @@ const ProductDetails = (props) => {
             <p className="headline">
               {appState.activeProduct.description}
             </p>
-            <h1>${appState.activeProduct.price}</h1>
+            <h1>${product.price}</h1>
 
-            <div className="d-flex flex-row">
+          <div className="d-flex flex-row">
               
-            { sizes ? 
+            { sizes && sizes.length > 0 && 
             <div className="option-wrap my-4 mr-4">
               <label>Size</label>
               <div className="controls d-flex flex-row">
-                
                 <select className="form-control" value={product.size} onChange={(e) => setProduct({...product, size: e.target.value})}>
                     {sizes.map( (e, i) => <option key={i} value={e}>{e}</option>)}
                 </select>
-
               </div>
             </div>
-            : null }
+            }
 
-            { colors ?
+            { colors &&
               <div className="option-wrap my-4 mr-4">
                 <label>Color</label>
                 <div className="controls d-flex flex-row">
@@ -127,8 +124,20 @@ const ProductDetails = (props) => {
 
                 </div>
               </div>
-              : null }
+            }
 
+            { altColors &&
+              <div className="option-wrap my-4 mr-4">
+                <label>Accent Color</label>
+                <div className="controls d-flex flex-row">
+                  
+                  <select className="form-control" value={product.color_alt} onChange={(e) => setProduct({...product, color_alt: e.target.value})}>
+                      {altColors.map( (e, i) => <option key={i} value={e}>{e}</option>)}
+                  </select>
+
+                </div>
+              </div>
+            }
             <div className="option-wrap my-4">
               <label>quantity</label>
               <div className="controls d-flex flex-row">
@@ -145,7 +154,27 @@ const ProductDetails = (props) => {
                 <button className="increment btn-transparent text-right" onClick={plus}>+</button>
               </div>
             </div>
+          </div>
+
+          <div className="d-flex flex-row">
+            <div className="option-wrap">
+              <label htmlFor=""></label>
+              <div className="controls d-flex flex-row">
+              <Switch
+                id="hardware_toggle"
+                className="mb-4"
+                label="Select Hardware"
+                defaultChecked={hardware.nickle}
+                onChange={(e) => {
+                  setHardware({nickle: e.target.checked})
+                  setProduct({...product, 
+                    price: e.target.checked === true ? parseFloat(active.price_nickel) : parseFloat(active.price_brass)})
+                }}
+                helpText={hardware.nickle ? 'Nickle' : 'Brass'}
+                />
               </div>
+            </div>
+          </div>
 
             <button className="btn btn-outline-primary btn-block btn-cart mt-5" onClick={addToCart} disabled={product.quantity > 0 ? false : true}>Add to Cart</button>
             
@@ -155,9 +184,31 @@ const ProductDetails = (props) => {
             
           </div>
         }
+        {appState.activeProduct &&
           <div className="col-sm-6 product-image-wrap">
-            <img src={argo} alt=""/>
+          { 
+            appState.activeProduct.img && appState.activeProduct.img.length > 1 ? 
+                <Carousel img={appState.activeProduct.img} className="" />
+                :
+                <div className="card-img-wrap pointer">
+                    {appState.activeProduct.img && appState.activeProduct.img.length > 0 ?
+                    <div className="">
+                        <img src={appState.activeProduct.img[0].sizes.medium_large} alt="" />
+                    </div>
+                    :
+                    <svg width={62.7} height={54.6}>
+                    <g fill="#D3D3D3">
+                      <path d="M17.8 18.8c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.3-5 5 2.3 5 5 5zM42.2 26.9c-2.7 1.3-4.9 3.4-6.5 6H18c-.4 0-.9.1-1.4 0h-9v-1.1c0-2.6 2.1-4.7 4.7-4.7h8c1.1-1.5 1.9-2.7 2-2.8.7-1 1.5-1.5 2.5-1.5 1.4 0 2.1 1.5 3.2 2.1 1.4.8 2.4-.3 3-1.4.5-.7 1-1.5 1.4-2.3.3-.4.6-.9.8-1.4.3-.5.7-1.1 1-1.6l.7-1.1c.1-.1.1-.2.2-.2.3-.4.5-.6.8-.6.2 0 .5.2.7.6 1.9 3.3 3.7 6.7 5.6 10z" />
+                      <path d="M0 0v41.7h33.4v-.9c0-.9.1-1.8.3-2.7H3.6V3.6h45.5v21.6h.2c1.2 0 2.3.1 3.4.4V0H0z" />
+                      <path d="M49.2 27.3c-7.4 0-13.6 6.1-13.7 13.4-.1 7.7 5.8 13.8 13.4 13.9h.2c3.7 0 7.1-1.4 9.6-3.9 2.6-2.6 4-6 4-9.6.1-7.6-5.9-13.7-13.5-13.8zm-1.4 24c-4.3-.7-7.2-3.1-8.6-7.2-1.1-3.2-.6-6.4 1.5-9.3l14.6 14.6c-2.2 1.7-4.8 2.3-7.5 1.9zm9.8-4.1L43 32.6c2.4-1.8 5-2.4 7.8-1.9 4.2.7 7 3.1 8.3 7.1 1.1 3.2.6 6.4-1.5 9.4z" />
+                    </g>
+                  </svg>
+                    }
+
+                </div>
+            } 
           </div>
+          }
         </div>
       </div>
       </>

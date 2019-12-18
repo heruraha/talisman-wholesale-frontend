@@ -16,12 +16,12 @@ const initialState = {
                 product: {
                     size:"Small/Medium",
                     color:"Rose Gold",
-                    quantity:1
+                    quantity:1,
+                    price: 100,
                 },
                 productDetails:  {
                     "sku": "t0003",
                     "name": "Rhea Chest Harness",
-                    "price": 100,
                     "description": "Elegant split strap harness with a cascade of chains and freshwater pearls",
                     "sizes": "sm, l",
                     "colors": "Rose Gold, Black (soft), Black (smooth), Black Bullhide, Oxblood, Brandy, Red, Purple, Saddle, Chocolate, Mahogany, Walnut, Blue",
@@ -32,7 +32,8 @@ const initialState = {
                 product: {
                     size:"Small/Medium",
                     color:"Rose Gold",
-                    quantity:3
+                    quantity:3,
+                    price: 100,
                 },
                 productDetails:{
                     "sku": "t0004",

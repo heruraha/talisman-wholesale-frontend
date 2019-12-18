@@ -89,7 +89,7 @@ input, select, textarea, .form-control {
   }
 }
 
-label {
+label, .label {
   font-family: $font-btn;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -132,5 +132,22 @@ label {
   }
   textarea {
     height: auto;
+  }
+}
+
+
+.react-hooks-paginator {
+  .page-item {
+    .page-link {
+      background: transparent;
+      border-color: $gold;
+      color: $gold;
+    }
+    &.active, &:hover {
+      .page-link {
+      background-color: $gold;
+      border-color: $gold;
+      }
+    }
   }
 }

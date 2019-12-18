@@ -42,7 +42,7 @@ const Checkout = (props) => {
     const getTotal = () => {
       if(appState.cart.items && appState.cart.items.length > 0) {
           let total = [];
-          appState.cart.items.map(e => total.push(Number(e.product.quantity) * Number(e.productDetails.price)))
+          appState.cart.items.map(e => total.push(Number(e.product.quantity) * Number(e.product.price)))
           return '$' + total.reduce((a,b) => a+b)
       } else {
         return '$0'
@@ -88,7 +88,7 @@ const Checkout = (props) => {
                       min="0" 
                       max="93" />
                     </span>
-                    <span className="third">${e.productDetails.price}</span>
+                    <span className="third">${e.product.price}</span>
                   </div>
                   <div className="bottom">{e.product.color} {e.product.size ?  `- ${e.product.size}` : null}</div>
                   <div className="delete" onClick={() => removeFromCart(i)}>
@@ -142,15 +142,7 @@ const Checkout = (props) => {
                   className="form-control" 
                   placeholder="(XXX) XXX-XXXX" />
               </div>
-              <div className="form-control-group">
-                <label>When do you need it?</label>
-                <input
-                  value={form.contact.date}
-                  onChange={(e) => handleForm(e, 'date')}
-                  type="date" 
-                  className="form-control" 
-                   />
-              </div>
+
             </div>
             <div className="col-sm-12 text-left">
               <div className="form-control-group">

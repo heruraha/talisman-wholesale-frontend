@@ -29,3 +29,10 @@
         opacity: .7;
     }
 }
+
+.product-carousel {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}

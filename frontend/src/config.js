@@ -1,11 +1,8 @@
 const environment = 'dev';
 
-export const API_URL = environment === 'dev' ? 'http://localhost:4000': 'http://dev.talismanleather.io/';
+export const API_URL = environment === 'dev' ? 'http://talisman.newaeoncreative.com/wp-json': 'http://dev.talismanleather.io/';
 
 export const ENDPOINTS = {
-    GET_PRODUCTS: '/products',
-    GET_PRODUCT: '/product',
-    POST_PRODUCT: '/product',
-    PATCH_PRODUCT: '/product',
-    DELETE_PRODUCT: '/product',
+    GET_PRODUCTS: '/kink_products/v1/post',
+    GET_PRODUCT: '/acf/v3/posts',
 }
