@@ -90,7 +90,9 @@ const Checkout = (props) => {
                     </span>
                     <span className="third">${e.product.price}</span>
                   </div>
-                  <div className="bottom">{e.product.color} {e.product.size ?  `- ${e.product.size}` : null}</div>
+                  <div className="bottom">{e.product.color} {e.product.color_alt &&  `+ ${e.product.color_alt} `} {e.product.size &&  `- ${e.product.size}`} {e.product.nickel_hardware ? `- Nickel` : `- Antique Brass`}
+                  {e.product.note && <span className="d-flex">Note: {e.product.note}</span>}
+                  </div>
                   <div className="delete" onClick={() => removeFromCart(i)}>
                     <svg width="19.25" height="22" viewBox="0 0 19.25 22">
                       <path d="M12.719-.687h.687a.344.344,0,0,0,.344-.344V-12.719a.344.344,0,0,0-.344-.344h-.687a.344.344,0,0,0-.344.344V-1.031A.344.344,0,0,0,12.719-.687Zm-6.875,0h.687a.344.344,0,0,0,.344-.344V-12.719a.344.344,0,0,0-.344-.344H5.844a.344.344,0,0,0-.344.344V-1.031A.344.344,0,0,0,5.844-.687ZM18.906-16.5H14.437l-1.444-1.925a2.323,2.323,0,0,0-1.65-.825H7.906a2.323,2.323,0,0,0-1.65.825L4.812-16.5H.344A.344.344,0,0,0,0-16.156v.687a.344.344,0,0,0,.344.344H1.375V.687A2.063,2.063,0,0,0,3.437,2.75H15.812A2.063,2.063,0,0,0,17.875.687V-15.125h1.031a.344.344,0,0,0,.344-.344v-.687A.344.344,0,0,0,18.906-16.5ZM7.356-17.6a.78.78,0,0,1,.55-.275h3.437a.78.78,0,0,1,.55.275l.825,1.1H6.531ZM16.5.687a.688.688,0,0,1-.687.687H3.437A.688.688,0,0,1,2.75.687V-15.125H16.5ZM9.281-.687h.687a.344.344,0,0,0,.344-.344V-12.719a.344.344,0,0,0-.344-.344H9.281a.344.344,0,0,0-.344.344V-1.031A.344.344,0,0,0,9.281-.687Z" transform="translate(0 19.25)" fill="#fff"/>
@@ -116,7 +118,7 @@ const Checkout = (props) => {
               <div className="form-control-group">
                 <label>Your Name</label>
                 <input
-                  value={form.contact.name}
+                  //value={form.contact.name}
                   onChange={(e) => handleForm(e, 'name')}
                   type="text" 
                   className="form-control" 
@@ -125,7 +127,7 @@ const Checkout = (props) => {
               <div className="form-control-group">
                 <label>Email</label>
                 <input
-                  value={form.contact.email}
+                  //value={form.contact.email}
                   onChange={(e) => handleForm(e, 'email')}
                   type="text" 
                   className="form-control" 
@@ -136,7 +138,7 @@ const Checkout = (props) => {
               <div className="form-control-group">
                 <label>Phone Number</label>
                 <input
-                  value={form.contact.phone}
+                  //value={form.contact.phone}
                   onChange={(e) => handleForm(e, 'phone')}
                   type="text" 
                   className="form-control" 
@@ -148,7 +150,7 @@ const Checkout = (props) => {
               <div className="form-control-group">
                 <label>Notes for your order</label>
                 <textarea
-                  value={form.contact.comments}
+                  //value={form.contact.comments}
                   onChange={(e) => handleForm(e, 'comments')}
                   type="text"
                   className="form-control" 

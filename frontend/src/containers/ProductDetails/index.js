@@ -4,6 +4,11 @@ import Header from 'components/Header/Header';
 import APIService from 'services/api/apiService';
 import Carousel from 'components/Carousel/Carousel'
 import Switch from 'components/Switch/Switch'
+import Modal from 'components/Modal/Modal'
+import Deerskin from 'assets/img/colorchart_deer.jpg'
+import Cowhide from 'assets/img/colorchart_cow.jpg'
+import { HelpCircle } from 'react-feather'
+
 
 const ProductDetails = (props) => {
 
@@ -13,7 +18,8 @@ const ProductDetails = (props) => {
     const [colors, setColors] = React.useState(null)
     const [altColors, setAltColors] = React.useState(null)
     const [sizes, setSizes] = React.useState(null)
-    const [hardware, setHardware] = React.useState({nickle: true})
+    const [hardware, setHardware] = React.useState({nickel: true})
+    const [modal, showModal] = React.useState({active: false, img: null})
     
     const active = appState.activeProduct
     const [product, setProduct] = React.useState({
@@ -21,9 +27,12 @@ const ProductDetails = (props) => {
       color: active && active.color.length > 0  ? active.color[0] : null, 
       color_alt: active && active.color_alt.length > 0  ? active.color_alt[0] : null,
       quantity: 1, 
-      price: active ?  hardware.nickle ? active.price_nickel : active.price_brass : null,
+      price: active ?  hardware.nickel ? active.price_nickel : active.price_brass : null,
+      note: null,
+      nickel_hardware: hardware.nickel,
     })
 
+    useEffect( () => setProduct(prevState => { return { ...prevState, nickel_hardware: hardware.nickel}}), [hardware])
     useEffect( () => {  
       dispatch({type: 'UPDATE_ACTIVE_SCREEN', payload: 'productDetails'})
       if(!appState.activeProduct) {
@@ -55,12 +64,6 @@ const ProductDetails = (props) => {
 
       }
     }, [appState.activeProduct]);
-
-    // useEffect( () => {
-    //   console.log(appState.activeProduct, 'active Product')
-    //   if(appState.activeProduct) 
-    // }, [appState.activeProduct])
-
 
     const addToCart = () => {
       if(product.quantity > 0) {
@@ -103,7 +106,7 @@ const ProductDetails = (props) => {
           <div className="d-flex flex-row">
               
             { sizes && sizes.length > 0 && 
-            <div className="option-wrap my-4 mr-4">
+            <div className="option-wrap my-4 mr-3">
               <label>Size</label>
               <div className="controls d-flex flex-row">
                 <select className="form-control" value={product.size} onChange={(e) => setProduct({...product, size: e.target.value})}>
@@ -114,8 +117,8 @@ const ProductDetails = (props) => {
             }
 
             { colors &&
-              <div className="option-wrap my-4 mr-4">
-                <label>Color</label>
+              <div className="option-wrap my-4 mr-3">
+                <label>Color <span className="ml-2 pointer" onClick={()=>showModal({active: true, img: Cowhide})}><HelpCircle color="#bfad86" size={18} /></span></label>
                 <div className="controls d-flex flex-row">
                   
                   <select className="form-control" value={product.color} onChange={(e) => setProduct({...product, color: e.target.value})}>
@@ -127,8 +130,8 @@ const ProductDetails = (props) => {
             }
 
             { altColors &&
-              <div className="option-wrap my-4 mr-4">
-                <label>Accent Color</label>
+              <div className="option-wrap my-4 mr-3">
+                <label>Accent Color <span className="ml-2 pointer" onClick={()=>showModal({active: true, img: Deerskin})}><HelpCircle color="#bfad86" size={18} /> </span></label>
                 <div className="controls d-flex flex-row">
                   
                   <select className="form-control" value={product.color_alt} onChange={(e) => setProduct({...product, color_alt: e.target.value})}>
@@ -156,21 +159,33 @@ const ProductDetails = (props) => {
             </div>
           </div>
 
+          {product && product.size === 'Custom' &&
+          <div className="d-flex flex-row">
+              <div className="form-control-group w-50 mb-4">
+              <label>Custom Size Notes</label>
+                <input
+                  onChange={(e) => setProduct({...product, note: e.target.value})}
+                  type="text" 
+                  className="form-control" 
+                  placeholder="E.g. desired size range" />
+              </div>
+          </div>
+          }
+
           <div className="d-flex flex-row">
             <div className="option-wrap">
-              <label htmlFor=""></label>
               <div className="controls d-flex flex-row">
               <Switch
                 id="hardware_toggle"
                 className="mb-4"
                 label="Select Hardware"
-                defaultChecked={hardware.nickle}
+                defaultChecked={hardware.nickel}
                 onChange={(e) => {
-                  setHardware({nickle: e.target.checked})
+                  setHardware({nickel: e.target.checked})
                   setProduct({...product, 
                     price: e.target.checked === true ? parseFloat(active.price_nickel) : parseFloat(active.price_brass)})
                 }}
-                helpText={hardware.nickle ? 'Nickle' : 'Brass'}
+                helpText={hardware.nickel ? 'nickel' : 'Antique Brass'}
                 />
               </div>
             </div>
@@ -211,6 +226,9 @@ const ProductDetails = (props) => {
           }
         </div>
       </div>
+      { modal.active && 
+        <Modal img={modal.img} close={()=>showModal({active: false, img: null})} />
+      }
       </>
     );
 
