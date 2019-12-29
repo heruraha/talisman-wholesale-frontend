@@ -26,7 +26,7 @@ const Carousel = (props) => {
             {
                 props.img.map((img, i) => {
                     return (
-                    <div className={slide === i ? 'carousel-item active' : 'carousel-item'} key={i}>
+                    <div onClick={props.onClick && props.onClick} className={slide === i ? 'carousel-item active' : 'carousel-item'} key={i}>
                         <img className="d-block w-100" src={img.sizes.medium_large}  />
                     </div>
                     )

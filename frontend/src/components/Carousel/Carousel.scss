@@ -14,6 +14,7 @@
 .carousel-control-prev, .carousel-control-next {
     opacity: 0 !important;
     cursor: pointer !important;
+    z-index:3;
     &:hover {
         opacity: 1 !important;
     }

@@ -13,7 +13,7 @@ const ProductListing = (props) => {
     return (
         <div className="product-item col-sm-4 mb-3">
             {props.photos && props.photos.length > 1 ? 
-                <Carousel img={props.photos} className="product-carousel" />
+                <Carousel onClick={props.onClick} img={props.photos} className="product-carousel" />
                 :
                 <div className={imgWrapClass} onClick={props.onClick}>
                     {props.photos && props.photos.length > 0 ?

@@ -15,10 +15,21 @@ const getProduct = (id) => {
   });
 }
 
+const postOrder = (order) => {
+  return request({
+    url: `${ENDPOINTS.POST_ORDER}`,
+    method: 'POST',
+    data: order,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+  })
+}
+
 
 
 const APIService = {
-  getAllProducts, getProduct
+  getAllProducts, getProduct, postOrder
 }
 
 export default APIService;

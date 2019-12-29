@@ -11,20 +11,18 @@ const Checkout = (props) => {
 
     const [appState, dispatch] = React.useContext(CTX);
 
-    const [form, setForm] = React. useState({
-      contact: {
-        name: '',
-        email: null,
-        phone: null,
-        comments: null,
-        date: new Date,
+    const [form, setForm] = React.useState({
+        name: 'Mister V',
+        email: 'thelastpulse@gmail.com',
+        phone: 8187877777,
+        comments: 'ok',
+        payment: 'venmo',
         address: {
-          street: null,
-          city: null,
-          state: null,
-          zip: null
+          street: '3151 dap',
+          city: 'new orleans',
+          state: 'la',
+          zip: 70117
         }
-      }
     })
 
     useEffect( () => {  
@@ -53,7 +51,47 @@ const Checkout = (props) => {
 
     const handleForm = (e, val) => {
       console.log(e.target.value, val)
-      //setForm({...form, contact: {...form.contact, name: e.target.value}})
+      setForm({...form, [val]: e.target.value})
+    }
+
+    const validateForm = () => {
+      const {name, email, phone, comments, payment, address} = form;
+
+      if(name && email && phone && comments && payment && address.street && address.city && address.state && address.zip) {
+const body = new FormData();
+const products = appState.cart.items.map(e => {
+return `
+${e.productDetails.name} - ${e.product.quantity} @  $${e.product.price}
+${e.product.color} ${e.product.color_alt ?  '+ '+ e.product.color_alt : ''} ${e.product.size ?  '- '+ e.product.size : ''} ${e.product.nickel_hardware ? '- Nickel' : '- Antique Brass'}
+${e.product.note ? 'Note: '+e.product.note : ''}
+`
+})
+
+const orderBody = 
+`${products}
+-----------------------------------------------------------
+Total ${getTotal()}
+Payment method: ${payment}
+`
+      
+        const shippingBody = `
+        ${name}
+        ${address.street}
+        ${address.city}, ${address.state} ${address.zip}
+        `
+        body.append('your-name', name)
+        body.append('your-email', email)
+        body.append('your-tel', phone)
+        body.append('your-message', orderBody)
+        body.append('your-shipping', shippingBody)
+
+        APIService.postOrder(body)
+        .then(res => {
+          console.log(res, 'posted')
+          console.log(body, 'body to p[ost')
+        })
+        .catch(err => console.log(err))
+      }
     }
 
     return (
@@ -140,17 +178,30 @@ const Checkout = (props) => {
                 <input
                   //value={form.contact.phone}
                   onChange={(e) => handleForm(e, 'phone')}
-                  type="text" 
+                  type="tel" 
                   className="form-control" 
                   placeholder="(XXX) XXX-XXXX" />
               </div>
+              <div className="form-control-group option-wrap">
+                <label>How would you like to be invoiced?</label>
+                <div className="controls">
 
+                
+                <select 
+                  className="form-control" 
+                  onChange={(e) => handleForm(e, 'payment')}>
+                  <option value={'direct_deposit'}>Direct Deposit</option>
+                  <option value={'venmo'}>Venmo</option>
+                  <option value={'square'}>Square</option>
+                </select>
+          {form.payment === 'square' && <small class="form-text gold">A 2.9% fee will be added to square invoices</small> }
+          </div>
+              </div>
             </div>
             <div className="col-sm-12 text-left">
               <div className="form-control-group">
                 <label>Notes for your order</label>
                 <textarea
-                  //value={form.contact.comments}
                   onChange={(e) => handleForm(e, 'comments')}
                   type="text"
                   className="form-control" 
@@ -165,7 +216,7 @@ const Checkout = (props) => {
             <h3 className="mt-4 mb-5">Shipping Information</h3>
             <div className="row"></div>
           </div>
-          <button className="mt-6 btn btn-outline-primary btn-block btn-cart">Checkout</button>
+          <button className="mt-6 btn btn-outline-primary btn-block btn-cart" onClick={validateForm}>Checkout</button>
           </>
           :
           <div className="cart-items empty">
