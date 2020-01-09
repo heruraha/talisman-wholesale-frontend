@@ -25,6 +25,11 @@ const reducer = (state, action) => {
             ...state,
             products: action.payload
             }
+        case 'SET_CATEGORY_PRODUCTS':
+            return {
+            ...state,
+            categoryProducts: action.payload
+            }
         case 'SET_ACTIVE_PRODUCT':
             return {
             ...state,

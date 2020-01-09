@@ -5,7 +5,7 @@ import Store from 'store';
 import 'assets/scss/index.scss';
 
 const App = () => {
-  document.title = `UI/UX Designer + Front-end Developer - newaeon.co`;
+  document.title = `Talisman Leather Wholesale`;
   return (
     <Store>
       <Routes />

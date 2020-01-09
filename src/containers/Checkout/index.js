@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { CTX } from 'store';
 import Header from 'components/Header/Header';
-import ProductListing from 'components/ProductListing/ProductListing';
+import { USAStates } from 'services/util';
 import APIService from 'services/api/apiService';
 import './Checkout.scss'
 
@@ -17,12 +17,10 @@ const Checkout = (props) => {
         phone: 8187877777,
         comments: 'ok',
         payment: 'venmo',
-        address: {
-          street: '3151 dap',
-          city: 'new orleans',
-          state: 'la',
-          zip: 70117
-        }
+        address_street: '3151 dap',
+        address_city: 'new orleans',
+        address_state: 'la',
+        address_zip: 70117
     })
 
     useEffect( () => {  
@@ -55,9 +53,9 @@ const Checkout = (props) => {
     }
 
     const validateForm = () => {
-      const {name, email, phone, comments, payment, address} = form;
+      const {name, email, phone, comments, payment, address_street, address_city , address_state , address_zip} = form;
 
-      if(name && email && phone && comments && payment && address.street && address.city && address.state && address.zip) {
+      if(name && email && phone && comments && payment && address_street && address_city && address_state && address_zip) {
 const body = new FormData();
 const products = appState.cart.items.map(e => {
 return `
@@ -76,8 +74,8 @@ Payment method: ${payment}
       
         const shippingBody = `
         ${name}
-        ${address.street}
-        ${address.city}, ${address.state} ${address.zip}
+        ${address_street}
+        ${address_city}, ${address_state} ${address_zip}
         `
         body.append('your-name', name)
         body.append('your-email', email)
@@ -139,7 +137,7 @@ Payment method: ${payment}
                 </li>
               )
             })}
-                        <li>
+            <li>
               <div className="top totals pb-0">
                 <span className="first">Total</span>
                 <span className="second"></span>
@@ -194,7 +192,7 @@ Payment method: ${payment}
                   <option value={'venmo'}>Venmo</option>
                   <option value={'square'}>Square</option>
                 </select>
-          {form.payment === 'square' && <small class="form-text gold">A 2.9% fee will be added to square invoices</small> }
+          { form.payment === 'square' && <small class="form-text gold">A 2.9% fee will be added to square invoices</small> }
           </div>
               </div>
             </div>
@@ -214,7 +212,51 @@ Payment method: ${payment}
 
           <div className="shipping-info full-width mb-5">
             <h3 className="mt-4 mb-5">Shipping Information</h3>
-            <div className="row"></div>
+            <div className="row">
+              <div className="col-sm-12 text-left">
+                <div className="form-control-group">
+                  <label>Address</label>
+                  <input
+                    onChange={(e) => handleForm(e, 'address_street')}
+                    type="text" 
+                    className="form-control" 
+                    placeholder="Street" />
+                </div>
+              </div>
+              <div className="col-sm-6 text-left">
+                <div className="form-control-group">
+                  <label>City</label>
+                  <input
+                    onChange={(e) => handleForm(e, 'address_city')}
+                    type="text" 
+                    className="form-control" 
+                    placeholder="" />
+                </div>
+              </div>
+              <div className="col-sm-3 text-left">
+                <div className="form-control-group option-wrap">
+                  <label>State</label>
+                  <div className="controls">
+                  <select 
+                  className="form-control" 
+                  onChange={(e) => handleForm(e, 'address_state')}>
+                    {USAStates.map( (e,i) => <option key={i} value={e.value}>{e.name}</option>)}
+                  </select>
+                  </div>
+                </div>
+              </div>
+              <div className="col-sm-3 text-left">
+                <div className="form-control-group">
+                  <label>Zip</label>
+                  <input
+                    onChange={(e) => handleForm(e, 'address_zip')}
+                    type="text" 
+                    className="form-control" 
+                    placeholder="" />
+                </div>
+              </div>              
+            </div>
+            
           </div>
           <button className="mt-6 btn btn-outline-primary btn-block btn-cart" onClick={validateForm}>Checkout</button>
           </>

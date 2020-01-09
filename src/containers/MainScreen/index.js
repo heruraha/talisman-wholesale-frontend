@@ -19,10 +19,11 @@ const MainScreen = (props) => {
 
     useEffect( () => {
       dispatch({type: 'UPDATE_ACTIVE_SCREEN', payload: 'home'})
+      if(!appState.products) {
       dispatch({type: 'LOADING_ENABLED'})
       APIService.getAllProducts()
       .then((res) =>  { 
-       //console.log(res, 'products')
+       console.log(res, 'products')
         let arr = []
         res.forEach(e => {
           let tmp = e.acf
@@ -38,6 +39,9 @@ const MainScreen = (props) => {
         dispatch({type: 'LOADING_DISABLED'});
         console.log(err);
       }) 
+      } else {
+        setData(appState.products)
+      }
 
     }, [appState.activeScreen]);
 

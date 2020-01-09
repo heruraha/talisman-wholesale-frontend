@@ -25,7 +25,8 @@ const Header = (p) => {
             <h3 className="smoll ml-3" onClick={gotoHome}>Talisman Leather</h3>
             <div className="nav-links">
             <Link to="/">Products</Link>
-            <Link to="/about">About</Link>
+            <Link to="/categories">Categories</Link>
+            <Link to="/policies">Policies</Link>
             </div>
           </div>
           

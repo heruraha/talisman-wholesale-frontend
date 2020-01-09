@@ -7,7 +7,9 @@ import MainScreen from 'containers/MainScreen';
 import About from 'containers/About';
 import ProductDetails from 'containers/ProductDetails';
 import Checkout from 'containers/Checkout';
-
+import Terms from 'containers/TermsConditions'
+import Categories from 'containers/Categories'
+import Category from 'containers/Category'
 import Sidenav from 'components/Sidenav/Sidenav';
 
 const routikner = [
@@ -27,8 +29,23 @@ const routikner = [
     exact: false
   },
   {
+    path: "/categories",
+    component: Categories,
+    exact: true
+  },
+  {
+    path: "/category/:cat",
+    component: Category,
+    exact: false
+  },
+  {
     path: "/checkout",
     component: Checkout,
+    exact: true
+  },
+  {
+    path: "/policies",
+    component: Terms,
     exact: true
   },
 ];
