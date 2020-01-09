@@ -227,3 +227,33 @@ export const monthNames = [
     "November", 
     "December"
 ];
+
+export const validateField = (type, value) => {
+    let valid
+    if(value && value !== null) {
+      switch(type) {
+          case 'email':
+              let email = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+              valid = email ? true : false;
+              return valid
+          case 'phone':
+              let phone = value.match(/^\d{10}$/)
+              valid = phone ? false : true
+              return valid
+          case 'password':
+              let pass = value.length >= 4;
+              valid = pass ? false : true;
+              return valid
+          case 'confirmPassword':
+              let conf = value[0] === value[1];
+              valid = conf ? false : true;
+              return valid
+          case 'number':
+              const regExp = new RegExp("^\\d+$");
+              let number = regExp.test(value);
+              return number
+          default:
+            break;
+      }
+    } 
+  }

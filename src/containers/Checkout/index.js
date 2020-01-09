@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { CTX } from 'store';
 import Header from 'components/Header/Header';
-import { USAStates } from 'services/util';
+import Toast from 'components/Toast/Toast';
+import { USAStates, validateField } from 'services/util';
 import APIService from 'services/api/apiService';
 import './Checkout.scss'
 
@@ -12,16 +13,20 @@ const Checkout = (props) => {
     const [appState, dispatch] = React.useContext(CTX);
 
     const [form, setForm] = React.useState({
-        name: 'Mister V',
-        email: 'thelastpulse@gmail.com',
-        phone: 8187877777,
-        comments: 'ok',
-        payment: 'venmo',
-        address_street: '3151 dap',
-        address_city: 'new orleans',
-        address_state: 'la',
-        address_zip: 70117
+        name: '',
+        email: '',
+        phone: '',
+        comments: '',
+        payment: '',
+        address_street: '',
+        address_city: '',
+        address_state: '',
+        address_zip: '',
     })
+
+    const [valid, setValid] = React.useState(false)
+    const [status, setStatus] = React.useState({sent: false, msg: ''})
+    const [msg, setMsg] = React.useState({active: false, type: null, data: null})
 
     useEffect( () => {  
       dispatch({type: 'UPDATE_ACTIVE_SCREEN', payload: 'checkout'})
@@ -33,7 +38,6 @@ const Checkout = (props) => {
       console.log(e,i)
       dispatch({type: 'UPDATE_PRODUCT_QTY', payload: { quantity: e, index: i}  })
     }
-
 
     const getTotal = () => {
       if(appState.cart.items && appState.cart.items.length > 0) {
@@ -53,12 +57,27 @@ const Checkout = (props) => {
     }
 
     const validateForm = () => {
-      const {name, email, phone, comments, payment, address_street, address_city , address_state , address_zip} = form;
+      const {name, email, phone, comments, payment, address_street, address_city , address_state , address_zip, valid} = form;
 
       if(name && email && phone && comments && payment && address_street && address_city && address_state && address_zip) {
-const body = new FormData();
-const products = appState.cart.items.map(e => {
-return `
+        setForm(prevState => { return { ...prevState, valid: true}})
+      }
+
+    }
+
+    const submitForm = () => {
+      const {name, email, phone, comments, payment, address_street, address_city , address_state , address_zip, valid} = form;
+
+
+        if(validateField('email', email) === false) {
+          setMsg({active: true, type: 'danger', data: 'Invalid Email'})
+        } else if(validateField('number', address_zip) === false) {
+          setMsg({active: true, type: 'danger', data: 'Invalid Zip'})
+        } else {
+        ///Send Email
+        const body = new FormData();
+        const products = appState.cart.items.map(e => {
+          return `
 ${e.productDetails.name} - ${e.product.quantity} @  $${e.product.price}
 ${e.product.color} ${e.product.color_alt ?  '+ '+ e.product.color_alt : ''} ${e.product.size ?  '- '+ e.product.size : ''} ${e.product.nickel_hardware ? '- Nickel' : '- Antique Brass'}
 ${e.product.note ? 'Note: '+e.product.note : ''}
@@ -70,8 +89,8 @@ const orderBody =
 -----------------------------------------------------------
 Total ${getTotal()}
 Payment method: ${payment}
+Order note: ${comments}
 `
-      
         const shippingBody = `
         ${name}
         ${address_street}
@@ -87,10 +106,25 @@ Payment method: ${payment}
         .then(res => {
           console.log(res, 'posted')
           console.log(body, 'body to p[ost')
+          setMsg({active: true, type: 'info', data: 'Order submitted!'})
+          setStatus({sent: true, message: 'Your order has been submitted'})
         })
         .catch(err => console.log(err))
-      }
+        }
+
+
+    
+      
+      
+    
     }
+
+    useEffect(() => {
+      console.log('validating')
+      const {name, email, phone, comments, payment, address_street, address_city , address_state , address_zip} = form;
+
+      if(name && email && phone && comments && payment && address_street && address_city && address_state && address_zip) { setValid(true)}
+    }, [form])
 
     return (
       <>
@@ -99,8 +133,9 @@ Payment method: ${payment}
       
         {appState.cart.items && appState.cart.items.length > 0 ?
           <>
+          {status.sent === true && <div className="alert text-center mb-2 border-dark gold">Thank you for submitting your order. We will contact you in the next business day to confirm your order.</div>}
           <div className="cart-items-checkout full-width mb-5">
-          <h3 className="mt-4 mb-5">Checkout</h3>
+          <h3 className="mt-4 mb-5">{status.sent === true ? 'Your Order' : 'Checkout'}</h3>
             <ol className="list">
             <li>
               <div className="top header">
@@ -119,7 +154,8 @@ Payment method: ${payment}
                       value={e.product.quantity}
                       className="form-control"
                       onChange={(e) => updateQty(e.target.value,i)}
-                      type="number" 
+                      type="number"
+                      disabled={status.sent === true ? true : false}
                       placeholder="0" 
                       min="0" 
                       max="93" />
@@ -147,6 +183,8 @@ Payment method: ${payment}
             </ol>
           </div>
 
+          { status.sent === false &&
+          <>
           <div className="contact-info full-width mb-5">
           <h3 className="mt-4 mb-5">Contact Information</h3>
           <div className="row">
@@ -192,7 +230,7 @@ Payment method: ${payment}
                   <option value={'venmo'}>Venmo</option>
                   <option value={'square'}>Square</option>
                 </select>
-          { form.payment === 'square' && <small class="form-text gold">A 2.9% fee will be added to square invoices</small> }
+                { form.payment === 'square' && <small class="form-text gold">A 2.9% fee will be added to square invoices</small> }
           </div>
               </div>
             </div>
@@ -208,7 +246,6 @@ Payment method: ${payment}
             </div>
           </div>
           </div>
-
 
           <div className="shipping-info full-width mb-5">
             <h3 className="mt-4 mb-5">Shipping Information</h3>
@@ -230,7 +267,7 @@ Payment method: ${payment}
                     onChange={(e) => handleForm(e, 'address_city')}
                     type="text" 
                     className="form-control" 
-                    placeholder="" />
+                    placeholder="..." />
                 </div>
               </div>
               <div className="col-sm-3 text-left">
@@ -252,13 +289,15 @@ Payment method: ${payment}
                     onChange={(e) => handleForm(e, 'address_zip')}
                     type="text" 
                     className="form-control" 
-                    placeholder="" />
+                    placeholder="00000" />
                 </div>
               </div>              
             </div>
             
           </div>
-          <button className="mt-6 btn btn-outline-primary btn-block btn-cart" onClick={validateForm}>Checkout</button>
+          <button disabled={valid ? false : true} className="mt-6 btn btn-outline-primary btn-block btn-cart" onClick={submitForm}>Checkout</button>
+          </>
+          }
           </>
           :
           <div className="cart-items empty">
@@ -267,6 +306,14 @@ Payment method: ${payment}
         }
 
       </div>
+      { msg.active && 
+        <Toast 
+          message={msg.data} 
+          type={msg.type} 
+          active={msg.active} 
+          close={() => setMsg({active: false, type: null, data: null})} 
+          />
+      }
       </>
     );
 

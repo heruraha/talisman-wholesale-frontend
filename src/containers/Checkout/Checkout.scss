@@ -72,3 +72,8 @@
       }
     }
   }
+
+  input[type="number"]:disabled {
+    background: transparent;
+    border: none;
+  }
