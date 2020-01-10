@@ -13,7 +13,7 @@ const Terms = (props) => {
         <li className="py-2">Order production will begin on receipt of full payment.</li>
         <li className="py-2">Please order at least 6 weeks in advance</li>
         <li className="py-2">Contact us for rush orders</li>
-        <li className="py-2">Rush order may be accommodated with a fee.</li>
+        <li className="py-2">Rush orders may be accommodated with a fee.</li>
         <li className="py-2">We handcraft all pieces, so please discuss your deadlines.</li>
         <li className="py-2">Leather sample cards available with order.</li>
         <li className="py-2">Color and sizing requests welcome.</li>
@@ -25,7 +25,7 @@ const Terms = (props) => {
         <li className="py-2">Questions are super welcome- get in touch!</li>
         </ul>
 
-        <p className="text-center mt-5 alert border">
+        <p className="text-center mt-5 alert border-dark gold">
             Want to check in with another shop who carries our work? <a href="http://shop.dynamotoys.com/" target="_blank">Visit Dynamo in New Orleans!</a>
         </p>
 
