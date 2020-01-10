@@ -56,14 +56,6 @@ const Checkout = (props) => {
       setForm({...form, [val]: e.target.value})
     }
 
-    const validateForm = () => {
-      const {name, email, phone, comments, payment, address_street, address_city , address_state , address_zip, valid} = form;
-
-      if(name && email && phone && comments && payment && address_street && address_city && address_state && address_zip) {
-        setForm(prevState => { return { ...prevState, valid: true}})
-      }
-
-    }
 
     const submitForm = () => {
       const {name, email, phone, comments, payment, address_street, address_city , address_state , address_zip, valid} = form;
@@ -123,7 +115,7 @@ Order note: ${comments}
       console.log('validating')
       const {name, email, phone, comments, payment, address_street, address_city , address_state , address_zip} = form;
 
-      if(name && email && phone && comments && payment && address_street && address_city && address_state && address_zip) { setValid(true)}
+      if(name && email && phone && payment && address_street && address_city && address_state && address_zip) { setValid(true)}
     }, [form])
 
     return (
