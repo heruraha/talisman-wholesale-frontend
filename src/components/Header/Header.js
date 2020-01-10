@@ -27,6 +27,7 @@ const Header = (p) => {
             <Link to="/">Products</Link>
             <Link to="/categories">Categories</Link>
             <Link to="/policies">Policies</Link>
+            <Link to="/contact">Contact</Link>
             </div>
           </div>
           

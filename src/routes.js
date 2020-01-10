@@ -4,7 +4,7 @@ import { CTX } from 'store';
 
 import NotFound from 'containers/NotFound';
 import MainScreen from 'containers/MainScreen';
-import About from 'containers/About';
+import Contact from 'containers/Contact';
 import ProductDetails from 'containers/ProductDetails';
 import Checkout from 'containers/Checkout';
 import Terms from 'containers/TermsConditions'
@@ -19,8 +19,8 @@ const routikner = [
     exact: true
   },
   {
-    path: "/about",
-    component: About,
+    path: "/contact",
+    component: Contact,
     exact: true
   },
   {
