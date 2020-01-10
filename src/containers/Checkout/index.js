@@ -17,7 +17,7 @@ const Checkout = (props) => {
         email: '',
         phone: '',
         comments: '',
-        payment: '',
+        payment: 'Direct Deposit',
         address_street: '',
         address_city: '',
         address_state: '',
