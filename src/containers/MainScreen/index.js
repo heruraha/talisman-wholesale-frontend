@@ -4,7 +4,9 @@ import Header from 'components/Header/Header';
 import ProductListing from 'components/ProductListing/ProductListing';
 import APIService from 'services/api/apiService';
 import Paginator from 'react-hooks-paginator';
-
+import ReactGA from 'react-ga';
+ReactGA.initialize('UA-156063246-1');
+ReactGA.pageview(window.location.pathname + window.location.search);
 const MainScreen = (props) => {
 
     document.title = `Talisman Leather Wholesale`;
@@ -18,12 +20,13 @@ const MainScreen = (props) => {
   const [currentData, setCurrentData] = useState([]);
 
     useEffect( () => {
+      
       dispatch({type: 'UPDATE_ACTIVE_SCREEN', payload: 'home'})
       if(!appState.products) {
       dispatch({type: 'LOADING_ENABLED'})
       APIService.getAllProducts()
       .then((res) =>  { 
-       console.log(res, 'products')
+       //console.log(res, 'products')
         let arr = []
         res.forEach(e => {
           let tmp = e.acf
@@ -50,7 +53,7 @@ const MainScreen = (props) => {
     }, [offset, data]);
 
     const loadProduct = (product) => {
-      console.log('clicked', product)
+      //console.log('clicked', product)
       dispatch({type: 'SET_ACTIVE_PRODUCT', payload: product})
       props.history.push('/product/'+product.ID)
     }
