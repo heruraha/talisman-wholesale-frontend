@@ -8,7 +8,9 @@ import Modal from 'components/Modal/Modal'
 import Deerskin from 'assets/img/colorchart_deer.jpg'
 import Cowhide from 'assets/img/colorchart_cow.jpg'
 import { HelpCircle } from 'react-feather'
-
+import ReactGA from 'react-ga';
+ReactGA.initialize('UA-156063246-1');
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 const ProductDetails = (props) => {
 
