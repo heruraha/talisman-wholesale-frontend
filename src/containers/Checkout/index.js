@@ -154,7 +154,7 @@ Order note: ${comments}
                         </span>
                         <span className="third">${e.product.price}</span>
                       </div>
-                      <div className="bottom">{e.product.color} {e.product.color_alt && `+ ${e.product.color_alt} `} {e.product.size && `- ${e.product.size}`} {e.product.hardware && e.product.hardware}
+                      <div className="bottom">{e.product.color} {e.product.color_alt && `+ ${e.product.color_alt} `} {e.product.size && `- ${e.product.size}`} {e.product.hardware && `- ${e.product.hardware} hardware`}
                         {e.product.note && <span className="d-flex">Note: {e.product.note}</span>}
                       </div>
                       <div className="delete" onClick={() => removeFromCart(i)}>

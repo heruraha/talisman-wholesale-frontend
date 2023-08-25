@@ -40,21 +40,24 @@ const ProductDetails = (props) => {
     if (hardware === 'nickel' && active) {
       setProduct({
         ...product,
-        price: parseFloat(active.price_nickel)
+        price: parseFloat(active.price_nickel),
+        hardware: hardware,
       })
     }
 
     if (hardware === 'brass' && active) {
       setProduct({
         ...product,
-        price: parseFloat(active.price_brass)
+        price: parseFloat(active.price_brass),
+        hardware: hardware,
       })
     }
 
     if (hardware === 'gold' && active) {
       setProduct({
         ...product,
-        price: parseFloat(active.price_gold)
+        price: parseFloat(active.price_gold),
+        hardware: hardware,
       })
     }
 
