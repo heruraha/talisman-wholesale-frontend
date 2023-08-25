@@ -11,10 +11,16 @@
   top: 0;
   right: 0;
   z-index: -1;
-  &.show { 
-    opacity: 1; 
+
+  &.show {
+    opacity: 1;
     z-index: 9999;
   }
+
+  @include sm {
+    width: 100%;
+  }
+
   div.wrap {
     display: flex;
     width: 100%;
@@ -25,7 +31,7 @@
     align-items: center;
     justify-content: flex-start;
 
-    .btn-cart{
+    .btn-cart {
       margin: auto 0 2rem 0;
       width: calc(100% - 2rem);
     }
@@ -36,24 +42,29 @@
     }
 
   }
+
   .close-menu {
     position: absolute;
     top: 1.5rem;
     right: 1rem;
     @extend .btn-transparent;
   }
+
   .cart-items {
     overflow-y: auto;
     max-height: 76vh;
+
     ol.list {
       margin: 0;
       padding: 0;
+
       li {
         display: flex;
         flex-direction: column;
         margin-bottom: 1rem;
         position: relative;
         transition: .3s all;
+
         .top {
           font-family: $font-btn;
           text-transform: uppercase;
@@ -61,36 +72,46 @@
           display: flex;
           justify-content: space-between;
           transition: .3s all;
+
           .first {
             width: 60%;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
           }
+
           .second {
             width: 20%;
             text-align: center;
           }
+
           .third {
             width: 20%;
             text-align: right;
           }
+
           &.header {
             color: $gold;
           }
+
           &.totals {
             border-top: 1px solid $gold;
             margin-top: 1rem;
             padding: .5rem 0;
-            .first {color: $gold}
+
+            .first {
+              color: $gold
+            }
           }
         }
+
         .bottom {
           font-size: .9rem;
           letter-spacing: 1px;
           color: $gold;
           transition: .3s all;
         }
+
         .delete {
           position: absolute;
           right: 0;
@@ -103,11 +124,23 @@
           font-size: 30px;
           cursor: pointer;
           visibility: hidden;
-          svg {width: 14px; height: auto;}
+
+          svg {
+            width: 14px;
+            height: auto;
+          }
         }
+
         &:hover {
-          .top,.bottom {opacity: .5; }
-          .delete {visibility: visible;}
+
+          .top,
+          .bottom {
+            opacity: .5;
+          }
+
+          .delete {
+            visibility: visible;
+          }
         }
       }
     }

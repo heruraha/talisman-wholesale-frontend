@@ -76,6 +76,7 @@ const ProductDetails = (props) => {
       console.log(obj, 'added to cart')
       dispatch({ type: 'ADD_PRODUCT_TO_CART', payload: obj });
       dispatch({ type: 'TOGGLE_SIDENAV', payload: true });
+      window.scrollTo(0, 0);
     }
   }
 
@@ -105,7 +106,7 @@ const ProductDetails = (props) => {
               </p>
               <h1>${product.price}</h1>
 
-              <div className="d-flex flex-row">
+              <div id="product-options" className="d-flex flex-row">
 
                 {sizes && sizes.length > 0 &&
                   <div className="option-wrap my-4 mr-3">
