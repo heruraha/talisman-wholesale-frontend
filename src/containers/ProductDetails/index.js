@@ -20,7 +20,7 @@ const ProductDetails = (props) => {
   const [colors, setColors] = React.useState(null)
   const [altColors, setAltColors] = React.useState(null)
   const [sizes, setSizes] = React.useState(null)
-  const [hardware, setHardware] = React.useState({ nickel: true })
+  const [hardware, setHardware] = React.useState('nickel')
   const [modal, showModal] = React.useState({ active: false, img: null })
 
   const active = appState.activeProduct
@@ -31,10 +31,35 @@ const ProductDetails = (props) => {
     quantity: 1,
     price: active ? hardware.nickel ? active.price_nickel : active.price_brass : null,
     note: null,
-    nickel_hardware: hardware.nickel,
+    hardware: hardware,
   })
 
-  useEffect(() => setProduct(prevState => { return { ...prevState, nickel_hardware: hardware.nickel } }), [hardware])
+  //useEffect(() => setProduct(prevState => { return { ...prevState, hardware: hardware } }), [hardware])
+  useEffect(() => {
+    console.log(hardware);
+    if (hardware === 'nickel' && active) {
+      setProduct({
+        ...product,
+        price: parseFloat(active.price_nickel)
+      })
+    }
+
+    if (hardware === 'brass' && active) {
+      setProduct({
+        ...product,
+        price: parseFloat(active.price_brass)
+      })
+    }
+
+    if (hardware === 'gold' && active) {
+      setProduct({
+        ...product,
+        price: parseFloat(active.price_gold)
+      })
+    }
+
+
+  }, [hardware])
   useEffect(() => {
     dispatch({ type: 'UPDATE_ACTIVE_SCREEN', payload: 'productDetails' })
     if (!appState.activeProduct) {
@@ -134,7 +159,7 @@ const ProductDetails = (props) => {
 
                 {altColors &&
                   <div className="option-wrap my-4 mr-3">
-                    <label>Accent Color <span className="ml-2 pointer" onClick={() => showModal({ active: true, img: Deerskin })}><HelpCircle color="#bfad86" size={18} /> </span></label>
+                    <label>Accent <span className="ml-2 pointer" onClick={() => showModal({ active: true, img: Deerskin })}><HelpCircle color="#bfad86" size={18} /> </span></label>
                     <div className="controls d-flex flex-row">
 
                       <select className="form-control" value={product.color_alt} onChange={(e) => setProduct({ ...product, color_alt: e.target.value })}>
@@ -176,24 +201,22 @@ const ProductDetails = (props) => {
               }
 
               <div className="d-flex flex-row">
+
                 <div className="option-wrap">
+                  <label>Hardware</label>
                   <div className="controls d-flex flex-row">
-                    <Switch
-                      id="hardware_toggle"
-                      className="mb-4"
-                      label="Select Hardware"
-                      defaultChecked={hardware.nickel}
-                      onChange={(e) => {
-                        setHardware({ nickel: e.target.checked })
-                        setProduct({
-                          ...product,
-                          price: e.target.checked === true ? parseFloat(active.price_nickel) : parseFloat(active.price_brass)
-                        })
-                      }}
-                      helpText={hardware.nickel ? 'nickel' : 'Antique Brass'}
-                    />
+
+                    <select className="form-control" value={hardware} onChange={(e) => {
+                      setHardware(e.target.value);
+                    }}>
+                      <option value={'nickel'}>Nickel</option>
+                      {active.price_brass && <option value={'brass'}>Antique Brass</option>}
+                      {active.price_gold && <option value={'gold'}>Gold</option>}
+                    </select>
+
                   </div>
                 </div>
+
               </div>
 
               <button className="btn btn-outline-primary btn-block btn-cart mt-5" onClick={addToCart} disabled={product.quantity > 0 ? false : true}>Add to Cart</button>
