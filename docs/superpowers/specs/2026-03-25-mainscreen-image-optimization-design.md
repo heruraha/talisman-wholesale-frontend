@@ -31,9 +31,9 @@ Note: `medium_large` and `large` are the same width, so upgrading between them p
 
 ### Carousel Component (`src/components/Carousel/Carousel.js`)
 
-**Change 1 — `imageSize` prop:** Accept an optional `imageSize` prop (string). Use `img.sizes[props.imageSize || 'medium_large']` as an inline fallback, consistent with the existing `props.color || '#bfad86'` fallback pattern already in the component. This allows callers to control image quality without duplicating the component.
+**Change 1 — `imageSize` prop:** Accept an optional `imageSize` prop (string). Use `img.sizes[props.imageSize] || img.sizes.medium_large` as the `src` value inside the image map. This provides a per-image fallback for cases where a given WordPress image does not have the requested size variant (e.g. images uploaded before `medium` was configured). The inline fallback is consistent with the existing `props.color || '#bfad86'` pattern already in the component. This allows callers to control image quality without duplicating the component.
 
-**Change 2 — `loading="lazy"` on all carousel images:** Add `loading="lazy"` to every `<img>` tag in the carousel map. Bootstrap 4's carousel hides inactive slides via `display: none` (via the `.carousel-item` class, which is `display: none` unless the `active` class is also present). Browsers do not fetch `loading="lazy"` images that are `display: none`, so only the active slide's image loads eagerly. No conditional rendering of `<img>` elements is needed — keeping all `<img>` elements in the DOM avoids layout shift when advancing slides, since `Carousel.scss` does not define a fixed height on `.carousel-item` (height is derived from image content).
+**Change 2 — `loading="lazy"` on all carousel images:** Add `loading="lazy"` to every `<img>` tag in the carousel map. This Carousel is a custom React component driven by `useState` — slide visibility is controlled by toggling the CSS class between `'carousel-item active'` and `'carousel-item'`. Bootstrap's CSS stylesheet defines `.carousel-item { display: none }` and `.carousel-item.active { display: block }`, so inactive slides are hidden via CSS `display: none`. Browsers do not fetch `loading="lazy"` images hidden by `display: none` in CSS, so only the active slide's image loads eagerly. All `<img>` elements remain in the DOM (no conditional rendering) — this keeps the implementation simple and avoids potential layout side effects during slide transitions.
 
 ### ProductListing Component (`src/components/ProductListing/ProductListing.js`)
 
@@ -45,7 +45,7 @@ Note: `medium_large` and `large` are the same width, so upgrading between them p
 
 ### ProductDetails Container (`src/containers/ProductDetails/index.js`)
 
-**Change 1 — Single-image quality upgrade (line 242 only):** The single-image fallback path currently uses `sizes.medium_large` (768px). Switch to `sizes['1536x1536']` (1151px) for a genuine quality improvement on the detail view.
+**Change 1 — Single-image quality upgrade:** The single-image fallback path (inside the `col-sm-6 product-image-wrap` div, in the branch where `appState.activeProduct.img.length === 1`) currently renders `<img src={appState.activeProduct.img[0].sizes.medium_large} alt="" />`. Switch to `sizes['1536x1536']` (1151px) for a genuine quality improvement on the detail view.
 
 **Naming note:** In ProductDetails, `img[n].sizes` refers to the WordPress image size map returned by the API — a plain object with keys like `medium`, `medium_large`, `1536x1536`, etc. This is entirely separate from the React state variable `sizes` (line 22), which holds product size options such as "S", "M", "L". They share no connection.
 
