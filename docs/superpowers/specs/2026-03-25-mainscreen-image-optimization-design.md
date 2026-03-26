@@ -33,7 +33,9 @@ Note: `medium_large` and `large` are the same width, so upgrading between them p
 
 **Change 1 — `imageSize` prop:** Accept an optional `imageSize` prop (string). Use `img.sizes[props.imageSize] || img.sizes.medium_large` as the `src` value inside the image map. This provides a per-image fallback for cases where a given WordPress image does not have the requested size variant (e.g. images uploaded before `medium` was configured). The inline fallback is consistent with the existing `props.color || '#bfad86'` pattern already in the component. This allows callers to control image quality without duplicating the component.
 
-**Change 2 — `loading="lazy"` on all carousel images:** Add `loading="lazy"` to every `<img>` tag in the carousel map. This Carousel is a custom React component driven by `useState` — slide visibility is controlled by toggling the CSS class between `'carousel-item active'` and `'carousel-item'`. Bootstrap's CSS stylesheet defines `.carousel-item { display: none }` and `.carousel-item.active { display: block }`, so inactive slides are hidden via CSS `display: none`. Browsers do not fetch `loading="lazy"` images hidden by `display: none` in CSS, so only the active slide's image loads eagerly. All `<img>` elements remain in the DOM (no conditional rendering) — this keeps the implementation simple and avoids potential layout side effects during slide transitions.
+**Change 2 — `loading="lazy"` on all carousel images:** Add `loading="lazy"` to every `<img>` tag in the carousel map. This Carousel is a custom React component driven by `useState` — slide visibility is controlled by toggling the CSS class between `'carousel-item active'` and `'carousel-item'`. Bootstrap's CSS stylesheet defines `.carousel-item { display: none }` and `.carousel-item.active { display: block }`, so inactive slides are hidden via CSS `display: none`. Browsers do not fetch `loading="lazy"` images that are `display: none` in CSS, preventing eager fetches for non-active slides.
+
+For the active slide's image, `loading="lazy"` does not cause problems: the browser only defers lazy images that are outside the viewport (or beyond a browser-defined distance threshold). If the carousel is in view (e.g. first row of listing cards), the active slide loads immediately regardless of the attribute. If the carousel is below the fold, the active slide is also deferred, which is the desired behavior. All `<img>` elements remain in the DOM (no conditional rendering) — this keeps the implementation simple and avoids potential layout side effects during slide transitions.
 
 ### ProductListing Component (`src/components/ProductListing/ProductListing.js`)
 
@@ -64,7 +66,7 @@ Note: `medium_large` and `large` are the same width, so upgrading between them p
 |------|---------|
 | `src/components/Carousel/Carousel.js` | Add `imageSize` prop (inline fallback), `loading="lazy"` on all images |
 | `src/components/ProductListing/ProductListing.js` | Switch to `sizes.medium \|\| sizes.medium_large`, pass `imageSize="medium"` to Carousel, add `loading="lazy"` |
-| `src/containers/ProductDetails/index.js` | Line 242 only: `sizes.medium_large` → `sizes['1536x1536']` |
+| `src/containers/ProductDetails/index.js` | Single-image branch in `product-image-wrap`: `sizes.medium_large` → `sizes['1536x1536']` |
 
 ## Expected Outcome
 
