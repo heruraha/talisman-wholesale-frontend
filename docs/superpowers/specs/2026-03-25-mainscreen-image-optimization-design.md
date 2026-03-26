@@ -31,45 +31,46 @@ Note: `medium_large` and `large` are the same width, so upgrading between them p
 
 ### Carousel Component (`src/components/Carousel/Carousel.js`)
 
-**Change 1 — `imageSize` prop:** Accept an optional `imageSize` prop (string, defaults to `'medium_large'`). Use `img.sizes[imageSize]` instead of the hardcoded `img.sizes.medium_large`. This allows callers to control image quality without duplicating the component.
+**Change 1 — `imageSize` prop:** Accept an optional `imageSize` prop (string). Use `img.sizes[props.imageSize || 'medium_large']` as an inline fallback, consistent with the existing `props.color || '#bfad86'` fallback pattern already in the component. This allows callers to control image quality without duplicating the component.
 
-**Change 2 — Conditional image render:** Currently, all slide `<img>` elements are rendered upfront and toggled via CSS class (`carousel-item active` vs `carousel-item`). Hidden slides still get fetched by the browser. Change to only render the `<img>` element when `slide === i`. The slide container `<div>` still renders to preserve layout; only the image itself is conditionally present.
-
-**Change 3 — `loading="lazy"`:** Add `loading="lazy"` to all `<img>` tags in the carousel. This is redundant with conditional rendering for non-active slides, but covers any edge cases and is a good default.
+**Change 2 — `loading="lazy"` on all carousel images:** Add `loading="lazy"` to every `<img>` tag in the carousel map. Bootstrap 4's carousel hides inactive slides via `display: none` (via the `.carousel-item` class, which is `display: none` unless the `active` class is also present). Browsers do not fetch `loading="lazy"` images that are `display: none`, so only the active slide's image loads eagerly. No conditional rendering of `<img>` elements is needed — keeping all `<img>` elements in the DOM avoids layout shift when advancing slides, since `Carousel.scss` does not define a fixed height on `.carousel-item` (height is derived from image content).
 
 ### ProductListing Component (`src/components/ProductListing/ProductListing.js`)
 
-**Change 1 — Smaller image size:** Switch the single-image `<img>` from `props.photos[0].sizes.medium_large` to `props.photos[0].sizes.medium` (225px vs 768px).
+**Change 1 — Smaller image size with fallback:** Switch the single-image `<img>` src from `props.photos[0].sizes.medium_large` to `props.photos[0].sizes.medium || props.photos[0].sizes.medium_large`. The fallback guards against products whose images were uploaded before the `medium` size was configured in WordPress, or images smaller than 225px that WordPress would not upscale.
 
 **Change 2 — Pass `imageSize` to Carousel:** Pass `imageSize="medium"` to the `<Carousel>` component so carousel slides in listing context also use the smaller size.
 
-**Change 3 — `loading="lazy"`:** Add `loading="lazy"` to the single-image `<img>` tag.
+**Change 3 — `loading="lazy"`:** Add `loading="lazy"` to the single-image `<img>` tag to defer loading for cards below the fold.
 
 ### ProductDetails Container (`src/containers/ProductDetails/index.js`)
 
-**Change 1 — Single-image quality upgrade:** The single-image fallback path currently uses `sizes.medium_large` (768px). Switch to `sizes['1536x1536']` (1151px) for a genuine quality improvement on the detail view.
+**Change 1 — Single-image quality upgrade (line 242 only):** The single-image fallback path currently uses `sizes.medium_large` (768px). Switch to `sizes['1536x1536']` (1151px) for a genuine quality improvement on the detail view.
 
-**No change to Carousel usage in ProductDetails:** The `<Carousel>` component is called without an `imageSize` prop, so it uses the default `medium_large`. This is intentional — the detail carousel keeps current quality.
+**Naming note:** In ProductDetails, `img[n].sizes` refers to the WordPress image size map returned by the API — a plain object with keys like `medium`, `medium_large`, `1536x1536`, etc. This is entirely separate from the React state variable `sizes` (line 22), which holds product size options such as "S", "M", "L". They share no connection.
+
+**No change to Carousel usage in ProductDetails:** The `<Carousel>` component is called without an `imageSize` prop, so it uses the `medium_large` default. This is intentional — the detail carousel keeps current quality.
 
 ### What Is Not Changed
 
 - `MainScreen/index.js` — passes image data through unchanged; no modifications needed
 - `services/api/apiService.js` — API layer untouched
 - Pagination logic — untouched
-- `ProductDetails` carousel — keeps `medium_large` default
+- `alt=""` attributes on `<img>` tags — pre-existing empty alt text is out of scope for this change
 
 ## File Change Summary
 
 | File | Changes |
 |------|---------|
-| `src/components/Carousel/Carousel.js` | Add `imageSize` prop, conditional image render, `loading="lazy"` |
-| `src/components/ProductListing/ProductListing.js` | Switch to `sizes.medium`, pass `imageSize="medium"` to Carousel, add `loading="lazy"` |
-| `src/containers/ProductDetails/index.js` | Single-image fallback: `sizes.medium_large` → `sizes['1536x1536']` |
+| `src/components/Carousel/Carousel.js` | Add `imageSize` prop (inline fallback), `loading="lazy"` on all images |
+| `src/components/ProductListing/ProductListing.js` | Switch to `sizes.medium \|\| sizes.medium_large`, pass `imageSize="medium"` to Carousel, add `loading="lazy"` |
+| `src/containers/ProductDetails/index.js` | Line 242 only: `sizes.medium_large` → `sizes['1536x1536']` |
 
 ## Expected Outcome
 
 - Listing image payload drops from 768px to 225px per image (~10× smaller file size)
-- Non-visible carousel slides no longer trigger image fetches
+- Non-active carousel slides do not trigger image fetches (via `loading="lazy"` + Bootstrap `display: none`)
 - Images below the fold defer loading until the user scrolls
+- No layout shift during carousel slide transitions
 - ProductDetails single-image view improves from 768px to 1151px
 - No backend changes required
