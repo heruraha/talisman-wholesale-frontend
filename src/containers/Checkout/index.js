@@ -88,6 +88,10 @@ Order note: ${comments}
         ${address_street}
         ${address_city}, ${address_state} ${address_zip}
         `
+      body.append('_wpcf7', '432')
+      body.append('_wpcf7_unit_tag', 'wpcf7-f432-p0-o1')
+      body.append('_wpcf7_version', '5.0')
+      body.append('_wpcf7_locale', 'en_US')
       body.append('your-name', name)
       body.append('your-email', email)
       body.append('your-tel', phone)
